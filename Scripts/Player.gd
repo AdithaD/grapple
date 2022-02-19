@@ -11,7 +11,7 @@ export var speed = 10
 export var sprint_multiplier = 2
 export var fall_acceleration = 55
 export var air_move_force = 20
-export var jump_impulse = 20
+export var jump_impulse = 35
 
 export var sensitivity = 1
 
@@ -99,10 +99,10 @@ func look_move(delta):
 	
 		velocity = transform.basis.xform(velocity)
 	
-		if(Input.is_action_pressed("sprint")):
+		if Input.is_action_pressed("sprint"):
 			velocity *= sprint_multiplier
 		
-		if Input.is_action_just_pressed("jump"):
+		if Input.is_action_pressed("jump"):
 			velocity.y += jump_impulse
 	else:
 		direction = transform.basis.xform(direction)
@@ -116,11 +116,13 @@ func look_move(delta):
 		velocity += force * delta
 		if(velocity.length() >  max_grapple_speed):
 			velocity = velocity.normalized() * max_grapple_speed
-		
+	
+	print(velocity)
+#	velocity = move_and_slide(velocity, Vector3.UP)
 	rpc("apply_movement", velocity)
 	
 remotesync func apply_movement(velocity):
-	velocity = move_and_slide(velocity, Vector3.UP)
+	self.velocity = move_and_slide(velocity, Vector3.UP)
 	
 puppet func receive_sync(sync_translation, sync_velocity):
 	print("recieving sync from ", get_tree().get_rpc_sender_id())
