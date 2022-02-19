@@ -122,7 +122,6 @@ func look_move(delta):
 remotesync func apply_movement(velocity):
 	velocity = move_and_slide(velocity, Vector3.UP)
 	
-	
 puppet func receive_sync(sync_translation, sync_velocity):
 	print("recieving sync from ", get_tree().get_rpc_sender_id())
 	translation = sync_translation
@@ -145,4 +144,5 @@ func set_player_name(name):
 
 
 func _on_SyncTimer_timeout():
-	rpc_unreliable("receive_sync", translation, velocity)# Replace with function body.
+	if(is_network_master()):
+		rpc_unreliable("receive_sync", translation, velocity)
