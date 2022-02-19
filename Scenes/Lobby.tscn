@@ -1,0 +1,86 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scenes/Lobby.gd" type="Script" id=1]
+
+[node name="Lobby" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyDialog" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -177.5
+margin_top = -177.5
+margin_right = 177.5
+margin_bottom = 177.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="ColorRect" parent="LobbyDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.27451, 0.345098, 0.258824, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyName" type="Label" parent="LobbyDialog"]
+anchor_right = 1.0
+margin_top = 14.0
+margin_bottom = 28.0
+text = "Lobby Name"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Players" type="Control" parent="LobbyDialog"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -143.5
+margin_top = -137.0
+margin_right = 143.5
+margin_bottom = 137.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="LobbyDialog/Players"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.168627, 0.282353, 0.2, 1 )
+
+[node name="Names" type="VBoxContainer" parent="LobbyDialog/Players"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -133.5
+margin_top = -131.5
+margin_right = 133.5
+margin_bottom = 131.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StartButton" type="Button" parent="LobbyDialog"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -20.5
+margin_top = -28.0
+margin_right = 20.5
+margin_bottom = -8.0
+text = "Start"
+
+[connection signal="button_down" from="LobbyDialog/StartButton" to="." method="_on_StartButton_button_down"]

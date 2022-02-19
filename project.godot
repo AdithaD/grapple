@@ -11,8 +11,11 @@ config_version=4
 [application]
 
 config/name="Grapple"
-run/main_scene="res://Scenes/Main.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://Scenes/MainMenu.tscn"
+
+[autoload]
+
+GameState="*res://game_state.gd"
 
 [input]
 
