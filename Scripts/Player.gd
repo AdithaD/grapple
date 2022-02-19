@@ -121,6 +121,14 @@ func look_move(delta):
 	
 remotesync func apply_movement(velocity):
 	velocity = move_and_slide(velocity, Vector3.UP)
+	
+master func begin_sync():
+	rpc("receive_sync", translation, velocity)
+	
+	
+puppet func receive_sync(sync_translation, sync_velocity):
+	translation = sync_translation
+	velocity = sync_velocity
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -136,3 +144,7 @@ func _input(event):
 		
 func set_player_name(name):
 	$Sprite3D/Viewport/PlayerName.set_player_name(name)
+
+
+func _on_SyncTimer_timeout():
+	begin_sync()# Replace with function body.

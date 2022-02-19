@@ -38,3 +38,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.02611 )
 
 [node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
 script = ExtResource( 2 )
+
+[node name="SyncTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="SyncTimer" to="." method="_on_SyncTimer_timeout"]
