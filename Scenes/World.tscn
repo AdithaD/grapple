@@ -12,14 +12,12 @@ albedo_color = Color( 0.145098, 0.85098, 0.231373, 1 )
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 15, 0.5, 15 )
 
-[sub_resource type="CubeMesh" id=3]
-size = Vector3( 4, 15, 4 )
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 5, 50, 300 )
 
-[sub_resource type="SpatialMaterial" id=4]
-albedo_color = Color( 0.921569, 0.552941, 0.0313726, 1 )
+[sub_resource type="BoxShape" id=8]
 
-[sub_resource type="BoxShape" id=5]
-extents = Vector3( 2, 7.5, 2 )
+[sub_resource type="CubeMesh" id=9]
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
@@ -27,12 +25,12 @@ script = ExtResource( 2 )
 [node name="Environment" type="Spatial" parent="."]
 
 [node name="Ground" type="StaticBody" parent="Environment"]
-transform = Transform( 5, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0 )
+transform = Transform( 20, 0, 0, 0, 1, 0, 0, 0, 20, 0, 0, 0 )
 collision_layer = 2
 collision_mask = 0
 
 [node name="MeshInstance" type="MeshInstance" parent="Environment/Ground"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.118079, -0.426154, -0.0697937 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0871639, -0.32547, 0.0797554 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 6 )
 
@@ -40,44 +38,147 @@ material/0 = SubResource( 6 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
 shape = SubResource( 2 )
 
-[node name="Box" type="StaticBody" parent="Environment"]
-transform = Transform( 6.38291, 0, 0, 0, 1, 0, 0, 0, 1, 10.1955, 8, 47.7003 )
+[node name="Boundaries" type="Spatial" parent="Environment"]
+
+[node name="PosXBoundary" type="StaticBody" parent="Environment/Boundaries"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 305, 50, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Boundaries/PosXBoundary"]
+shape = SubResource( 7 )
+
+[node name="NegXBoundary" type="StaticBody" parent="Environment/Boundaries"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -305, 50, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Boundaries/NegXBoundary"]
+shape = SubResource( 7 )
+
+[node name="NegZBoundary" type="StaticBody" parent="Environment/Boundaries"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.3332e-05, 50, -305 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Boundaries/NegZBoundary"]
+shape = SubResource( 7 )
+
+[node name="PosZBoundary" type="StaticBody" parent="Environment/Boundaries"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.3332e-05, 50, 305 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Boundaries/PosZBoundary"]
+shape = SubResource( 7 )
+
+[node name="Buildings" type="Spatial" parent="Environment"]
+
+[node name="SkyScraper" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74, 40, 0 )
 collision_layer = 2
 collision_mask = 0
 
-[node name="MeshInstance" type="MeshInstance" parent="Environment/Box"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014926, -1.90735e-06, 0.0363045 )
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper"]
+shape = SubResource( 8 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Environment/Box"]
-shape = SubResource( 5 )
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
 
-[node name="Box2" type="StaticBody" parent="Environment"]
-transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 10.0501, 14.9444, -36.7899 )
+[node name="SkyScraper7" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, -12.3229, 16, -153 )
 collision_layer = 2
 collision_mask = 0
 
-[node name="MeshInstance" type="MeshInstance" parent="Environment/Box2"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014926, -1.90735e-06, 0.0363045 )
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper7"]
+shape = SubResource( 8 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Environment/Box2"]
-shape = SubResource( 5 )
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper7"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
 
-[node name="Box3" type="StaticBody" parent="Environment"]
-transform = Transform( 4, 0, 0, 0, 1.5, 0, 0, 0, 4, -33.6205, 10.7148, 13.0704 )
+[node name="SkyScraper8" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, 45.8395, 16, -153 )
 collision_layer = 2
 collision_mask = 0
 
-[node name="MeshInstance" type="MeshInstance" parent="Environment/Box3"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014926, -1.90735e-06, 0.0363045 )
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper8"]
+shape = SubResource( 8 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Environment/Box3"]
-shape = SubResource( 5 )
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper8"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper9" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 25, 0, 0, 0, 8, 0, 0, 0, 25, 10.443, 9, -82.604 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper9"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper9"]
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper2" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74, 41, -35.3826 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper2"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper2"]
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper3" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -70.4556, 40, -74.3154 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper3"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper4" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -74.1885, 40, -123.96 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper4"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper5" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -54.4935, 41, -153.355 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper5"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper5"]
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="SkyScraper6" type="StaticBody" parent="Environment/Buildings"]
+transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -29.8778, 40, -183.726 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/Buildings/SkyScraper6"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper6"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+mesh = SubResource( 9 )
+material/0 = null
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.644711, 0.764427, 0, -0.764427, 0.644711, 0, 4.72565, 0 )
