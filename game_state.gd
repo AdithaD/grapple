@@ -26,6 +26,8 @@ signal connection_succeeded()
 signal game_ended()
 signal game_error(what)
 
+signal init_complete()
+
 # Callback from SceneTree.
 func _player_connected(id):
 	# Registration of a client beings here, tell the connected player that we are here.
@@ -63,11 +65,12 @@ func _connected_fail():
 
 # Lobby management functions.
 
-remote func register_player(new_player_name, lobby_name):
+remote func register_player(new_player_name, new_lobby_name):
 	var id = get_tree().get_rpc_sender_id()
 	print(id)
 	players[id] = new_player_name
-	self.lobby_name = lobby_name
+	lobby_name =  new_lobby_name
+	
 	emit_signal("player_list_changed")
 
 
@@ -110,6 +113,7 @@ remote func pre_start_game(spawn_points):
 
 
 remote func post_start_game():
+	emit_signal("init_complete")
 	get_tree().set_pause(false) # Unpause and unleash the game!
 
 
