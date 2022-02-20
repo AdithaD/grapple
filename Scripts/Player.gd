@@ -10,8 +10,8 @@ export (PackedScene) var debug_ball
 export var speed = 10
 export var sprint_multiplier = 2
 export var fall_acceleration = 55
-export var air_move_force = 8
-export var jump_impulse = 20
+export var air_move_force = 20
+export var jump_impulse = 35
 
 export var sensitivity = 1
 
@@ -26,12 +26,14 @@ var grappling = false
 var grapple_point = Vector3.ZERO
 
 func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	if is_network_master():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		$Pivot/Camera.make_current()
 
 func _physics_process(delta):
-	look_move(delta)
-	actions(delta)
-	pass # Replace with function body.
+	if(is_network_master()):
+		look_move(delta)
+		actions(delta)
 
 func actions(delta):
 	if Input.is_action_just_pressed("grapple"):
@@ -97,12 +99,13 @@ func look_move(delta):
 	
 		velocity = transform.basis.xform(velocity)
 	
-		if(Input.is_action_pressed("sprint")):
+		if Input.is_action_pressed("sprint"):
 			velocity *= sprint_multiplier
 		
-		if Input.is_action_just_pressed("jump"):
+		if Input.is_action_pressed("jump"):
 			velocity.y += jump_impulse
 	else:
+		direction = transform.basis.xform(direction)
 		velocity += direction * air_move_force * delta
 		
 	velocity.y -= fall_acceleration * delta
@@ -113,10 +116,18 @@ func look_move(delta):
 		velocity += force * delta
 		if(velocity.length() >  max_grapple_speed):
 			velocity = velocity.normalized() * max_grapple_speed
-		
 	
+	print(velocity)
+#	velocity = move_and_slide(velocity, Vector3.UP)
+	rpc("apply_movement", velocity)
 	
-	velocity = move_and_slide(velocity, Vector3.UP)
+remotesync func apply_movement(velocity):
+	self.velocity = move_and_slide(velocity, Vector3.UP)
+	
+puppet func receive_sync(sync_translation, sync_velocity):
+	print("recieving sync from ", get_tree().get_rpc_sender_id())
+	translation = sync_translation
+	velocity = sync_velocity
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -129,3 +140,11 @@ func _input(event):
 		rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
 		
 		$Pivot.rotate_x(-rotx)
+		
+func set_player_name(name):
+	$Sprite3D/Viewport/PlayerName.set_player_name(name)
+
+
+func _on_SyncTimer_timeout():
+	if(is_network_master()):
+		rpc_unreliable("receive_sync", translation, velocity)

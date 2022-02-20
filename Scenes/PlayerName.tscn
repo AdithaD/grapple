@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/PlayerName.gd" type="Script" id=1]
+[ext_resource path="res://Assets/DiamondSignature-Regular.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 256
+font_data = ExtResource( 2 )
+
+[node name="PlayerName" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.180392, 0.843137, 0.87451, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -403.0
+margin_top = -150.5
+margin_right = 403.0
+margin_bottom = 150.5
+custom_fonts/font = SubResource( 1 )
+text = "Name"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

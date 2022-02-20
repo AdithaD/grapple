@@ -1,0 +1,275 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scenes/MainMenu.gd" type="Script" id=1]
+
+[node name="MainMenu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 4.0
+margin_bottom = 4.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -179.0
+margin_top = -105.0
+margin_right = 179.0
+margin_bottom = 105.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SingleplayerButton" type="Button" parent="Buttons"]
+margin_right = 358.0
+margin_bottom = 67.0
+size_flags_vertical = 3
+text = "Play"
+
+[node name="MultiplayerButton" type="Button" parent="Buttons"]
+margin_top = 71.0
+margin_right = 358.0
+margin_bottom = 138.0
+size_flags_vertical = 3
+text = "Multiplayer"
+
+[node name="ExitButton" type="Button" parent="Buttons"]
+margin_top = 142.0
+margin_right = 358.0
+margin_bottom = 210.0
+size_flags_vertical = 3
+text = "Exit"
+
+[node name="Title" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -240.0
+margin_top = 35.0
+margin_right = 242.0
+margin_bottom = 104.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="Label" parent="Title"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 7
+text = "Grapple
+"
+align = 1
+valign = 1
+
+[node name="Multiplayer" type="Control" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -109.0
+margin_top = -96.0
+margin_right = 109.0
+margin_bottom = 96.0
+
+[node name="ColorRect" type="ColorRect" parent="Multiplayer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -127.5
+margin_top = -122.0
+margin_right = 127.5
+margin_bottom = 122.0
+color = Color( 0.211765, 0.227451, 0.266667, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MultiplayerOptions" type="VBoxContainer" parent="Multiplayer"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -87.5
+margin_right = 87.5
+margin_bottom = 187.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerName" type="Control" parent="Multiplayer/MultiplayerOptions"]
+margin_right = 175.0
+margin_bottom = 53.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerNameLabel" type="Label" parent="Multiplayer/MultiplayerOptions/PlayerName"]
+anchor_right = 1.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "Player Name
+"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerNameEdit" type="LineEdit" parent="Multiplayer/MultiplayerOptions/PlayerName"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.5
+margin_top = -28.5
+margin_right = 0.5
+margin_bottom = -4.5
+size_flags_horizontal = 3
+text = "Greg"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Host" type="Control" parent="Multiplayer/MultiplayerOptions"]
+margin_top = 57.0
+margin_right = 175.0
+margin_bottom = 111.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostGameLabel" type="Label" parent="Multiplayer/MultiplayerOptions/Host"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -37.0
+margin_top = 4.5
+margin_right = 43.0
+margin_bottom = 35.5
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "Lobby Name
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyName" type="Control" parent="Multiplayer/MultiplayerOptions/Host"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -87.5
+margin_top = -35.0
+margin_right = 87.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyNameEdit" type="LineEdit" parent="Multiplayer/MultiplayerOptions/Host/LobbyName"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -11.5
+margin_right = 124.0
+margin_bottom = 12.5
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostButton" type="Button" parent="Multiplayer/MultiplayerOptions/Host/LobbyName"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -42.0
+margin_top = -10.0
+margin_bottom = 10.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Host"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Join" type="Control" parent="Multiplayer/MultiplayerOptions"]
+margin_top = 115.0
+margin_right = 175.0
+margin_bottom = 169.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="JoinGameLabel" type="Label" parent="Multiplayer/MultiplayerOptions/Join"]
+anchor_right = 1.0
+margin_bottom = 48.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "IP Address
+
+"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="Multiplayer/MultiplayerOptions/Join"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -87.5
+margin_top = -35.0
+margin_right = 87.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IPEdit" type="LineEdit" parent="Multiplayer/MultiplayerOptions/Join/Control"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -11.5
+margin_right = 124.0
+margin_bottom = 12.5
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="JoinButton" type="Button" parent="Multiplayer/MultiplayerOptions/Join/Control"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -42.0
+margin_top = -10.0
+margin_bottom = 10.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Join"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ErrorText" type="Label" parent="Multiplayer/MultiplayerOptions"]
+margin_top = 173.0
+margin_right = 175.0
+margin_bottom = 187.0
+custom_colors/font_color = Color( 0.968627, 0.0588235, 0.0588235, 1 )
+align = 1
+
+[connection signal="button_down" from="Buttons/SingleplayerButton" to="." method="_on_SingleplayerButton_button_down"]
+[connection signal="button_down" from="Buttons/MultiplayerButton" to="." method="_on_MultiplayerButton_button_down"]
+[connection signal="button_down" from="Multiplayer/MultiplayerOptions/Host/LobbyName/HostButton" to="." method="_on_HostButton_button_down"]
+[connection signal="button_down" from="Multiplayer/MultiplayerOptions/Join/Control/JoinButton" to="." method="_on_JoinButton_button_down"]
