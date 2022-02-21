@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Assets/crosshair.png" type="Texture" id=1]
-[ext_resource path="res://Scenes/World.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/HealthBar.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/World.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/HealthBar.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/GunPickup.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 30, 1, 30 )
@@ -68,7 +69,7 @@ shape = SubResource( 7 )
 [node name="Buildings" type="Spatial" parent="Environment"]
 
 [node name="SkyScraper" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74, 40, 0 )
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74.1695, 39, 0.0897446 )
 collision_layer = 2
 collision_mask = 0
 
@@ -119,7 +120,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper2" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74, 41, -35.3826 )
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -74.1695, 40, -35.2929 )
 collision_layer = 2
 collision_mask = 0
 
@@ -131,7 +132,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper3" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -70.4556, 40, -74.3154 )
+transform = Transform( 8, 0, 0, 0, 40, 0, 0, 0, 8, -70.6251, 39, -74.2257 )
 collision_layer = 2
 collision_mask = 0
 
@@ -144,7 +145,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper4" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -74.1885, 40, -123.96 )
+transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -74.358, 39, -123.87 )
 collision_layer = 2
 collision_mask = 0
 
@@ -182,7 +183,8 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.644711, 0.764427, 0, -0.764427, 0.644711, 0, 4.72565, 0 )
+transform = Transform( 1, 0, 0, 0, 0.644711, 0.764427, 0, -0.764427, 0.644711, 0.0117016, 4.72565, -0.00878477 )
+shadow_enabled = true
 
 [node name="UI" type="Control" parent="."]
 anchor_right = 1.0
@@ -240,3 +242,7 @@ transform = Transform( -0.939448, 0, 0.342692, 0, 1, 0, -0.342692, 0, -0.939448,
 
 [node name="3" type="Spatial" parent="SpawnPoints"]
 transform = Transform( -0.939448, 0, 0.342692, 0, 1, 0, -0.342692, 0, -0.939448, 10.6693, 0, -1.09241 )
+
+[node name="Gun Pickup" parent="." instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 0.602562, 1.56046, 0.557283 )
+collision_mask = 3
