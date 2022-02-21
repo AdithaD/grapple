@@ -82,7 +82,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper7" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, -12.3229, 16, -153 )
+transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, -12.3229, 15, -153 )
 collision_layer = 2
 collision_mask = 0
 
@@ -90,12 +90,11 @@ collision_mask = 0
 shape = SubResource( 8 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper7"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
 mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper8" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, 45.8395, 16, -153 )
+transform = Transform( 17, 0, 0, 0, 14.964, 0, 0, 0, 10, 45.8006, 15.0389, -153.001 )
 collision_layer = 2
 collision_mask = 0
 
@@ -108,7 +107,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper9" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 25, 0, 0, 0, 8, 0, 0, 0, 25, 10.443, 9, -82.604 )
+transform = Transform( 25, 0, 0, 0, 8, 0, 0, 0, 25, 10.443, 8, -82.604 )
 collision_layer = 2
 collision_mask = 0
 
@@ -158,7 +157,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="SkyScraper5" type="StaticBody" parent="Environment/Buildings"]
-transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -54.4935, 41, -153.355 )
+transform = Transform( 6.64609, 0, -4.45303, 0, 40, 0, 4.45303, 0, 6.64609, -53.4445, 40.2988, -153.435 )
 collision_layer = 2
 collision_mask = 0
 
@@ -166,6 +165,7 @@ collision_mask = 0
 shape = SubResource( 8 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper5"]
+transform = Transform( 1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0 )
 mesh = SubResource( 9 )
 material/0 = null
 
@@ -178,7 +178,7 @@ collision_mask = 0
 shape = SubResource( 8 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Environment/Buildings/SkyScraper6"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0 )
+transform = Transform( 1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0 )
 mesh = SubResource( 9 )
 material/0 = null
 
@@ -245,4 +245,8 @@ transform = Transform( -0.939448, 0, 0.342692, 0, 1, 0, -0.342692, 0, -0.939448,
 
 [node name="Gun Pickup" parent="." instance=ExtResource( 4 )]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 0.602562, 1.56046, 0.557283 )
+collision_mask = 3
+
+[node name="Gun Pickup2" parent="." instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 6.76496, 1.56046, 0.557283 )
 collision_mask = 3
