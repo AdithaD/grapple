@@ -46,12 +46,15 @@ func _input(event):
 		
 		var rotx = event.relative.y / get_viewport().size.y * sensitivity
 		
-		rotate_y(-roty)
 		
 		rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
 		
-		$Pivot.rotate_x(rotx)
+		rpc("apply_rotation", rotx, roty)
 		
+
+remotesync func apply_rotation(rotx, roty):
+	$Pivot.rotate_x(rotx)
+	rotate_y(-roty)
 
 func _ready():
 	print("p")
@@ -152,7 +155,7 @@ func actions(_delta):
 	if Input.is_action_just_pressed("drop"):
 		drop_item()
 	if Input.is_action_just_pressed("grab"):
-		grab_item()
+		rpc("grab_item")
 # Initiates a grapple to a target point
 func start_grapple(to: Vector3):
 	# Creates a debug ball at hit position
@@ -172,9 +175,10 @@ func stop_grappling():
 	grappling = false
 	
 # Forces the synchronization of translation and velocity between peers
-puppet func receive_sync(sync_translation, sync_velocity):
+puppet func receive_sync(sync_translation, sync_rotation, sync_velocity):
 	print("recieving sync from ", get_tree().get_rpc_sender_id())
 	translation = sync_translation
+	rotation = sync_rotation
 	velocity = sync_velocity
 
 func take_fall_damage():
@@ -238,9 +242,9 @@ func set_player_name(name):
 # Timer for sync
 func _on_SyncTimer_timeout():
 	if(is_network_master()):
-		rpc_unreliable("receive_sync", translation, velocity)
+		rpc_unreliable("receive_sync", translation, rotation, velocity)
 
-func grab_item():
+remotesync func grab_item():
 	var items = $ItemPickupArea.get_overlapping_bodies()
 	
 	if items.size() > 1:
@@ -251,8 +255,9 @@ func grab_item():
 			if(dist < closest_dist):
 				closest = i
 				closest_dist = dist
-				
+		print(items[closest].player_item)
 		pick_up(items[closest])
 	elif items.size() == 1:
-		pick_up(items.front())		
+		print(items.front())
+		pick_up(items.front())	
 
