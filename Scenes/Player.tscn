@@ -19,6 +19,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107654, 2.05219, 0.000422001
 collision_mask = 6
 script = ExtResource( 1 )
 debug_ball = ExtResource( 3 )
+starting_health = 1000
 
 [node name="Collider" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )

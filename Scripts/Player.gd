@@ -40,16 +40,17 @@ var current_item = null
 var items = []
 
 func _input(event):
-	# Rotates the camera based on mouse input
-	if event is InputEventMouseMotion:
-		var roty = event.relative.x / get_viewport().size.x * sensitivity
-		
-		var rotx = event.relative.y / get_viewport().size.y * sensitivity
-		
-		
-		rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
-		
-		rpc("apply_rotation", rotx, roty)
+	if(is_network_master()):
+			# Rotates the camera based on mouse input
+		if event is InputEventMouseMotion:
+			var roty = event.relative.x / get_viewport().size.x * sensitivity
+			
+			var rotx = event.relative.y / get_viewport().size.y * sensitivity
+			
+			
+			rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
+			
+			rpc("apply_rotation", rotx, roty)
 		
 
 remotesync func apply_rotation(rotx, roty):
