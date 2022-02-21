@@ -38,12 +38,12 @@ margin = 0.1
 [node name="Camera" type="Camera" parent="Pivot"]
 far = 548.5
 
-[node name="GrappleLine" type="ImmediateGeometry" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.02611 )
-script = ExtResource( 2 )
-
 [node name="Hand" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00965428, 0, 1.02611 )
+
+[node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00965428, 0, 0 )
+script = ExtResource( 2 )
 
 [node name="SyncTimer" type="Timer" parent="."]
 wait_time = 2.0
