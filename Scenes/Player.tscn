@@ -30,7 +30,7 @@ mesh = SubResource( 1 )
 material/0 = SubResource( 3 )
 
 [node name="Pivot" type="SpringArm" parent="."]
-transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.54992, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54992, 0 )
 collision_mask = 2
 spring_length = 7.0
 margin = 0.1
@@ -39,7 +39,7 @@ margin = 0.1
 far = 548.5
 
 [node name="Hand" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00965428, 0, 1.02611 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.026 )
 
 [node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00965428, 0, 0 )
@@ -58,4 +58,3 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0148973, 2.38419e-07, 0.000
 shape = SubResource( 4 )
 
 [connection signal="timeout" from="SyncTimer" to="." method="_on_SyncTimer_timeout"]
-[connection signal="body_entered" from="ItemPickupArea" to="." method="_on_ItemPickupArea_body_entered"]

@@ -50,7 +50,7 @@ func _input(event):
 		
 		rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
 		
-		$Pivot.rotate_x(-rotx)
+		$Pivot.rotate_x(rotx)
 		
 
 func _ready():
@@ -71,13 +71,13 @@ func look_move(delta):
 	
 	# Basic Keyboard Movement
 	if Input.is_action_pressed("move_right"):
-		direction.x -= 1
-	if Input.is_action_pressed("move_left"):
 		direction.x += 1
+	if Input.is_action_pressed("move_left"):
+		direction.x -= 1
 	if Input.is_action_pressed("move_back"):
-		direction.z -= 1
-	if Input.is_action_pressed("move_forward"):
 		direction.z += 1
+	if Input.is_action_pressed("move_forward"):
+		direction.z -= 1
 	
 	if direction != Vector3.ZERO:
 			direction = direction.normalized();
@@ -149,7 +149,10 @@ func actions(_delta):
 					start_grapple(result.position)
 	if Input.is_action_pressed("use"):
 		use_item()
-		
+	if Input.is_action_just_pressed("drop"):
+		drop_item()
+	if Input.is_action_just_pressed("grab"):
+		grab_item()
 # Initiates a grapple to a target point
 func start_grapple(to: Vector3):
 	# Creates a debug ball at hit position
@@ -198,10 +201,12 @@ func pick_up(item):
 	$Hand.add_child(player_item)
 	
 	items.append(player_item)
+	
 	if !current_item: 
 		current_item = player_item
-		
-	item.queue_free()
+	
+	item.get_parent().remove_child(item)
+	player_item.drop_scene = item
 	
 func use_item():
 	if(current_item):
@@ -210,6 +215,23 @@ func use_item():
 		else:
 			print("player has somehow equipped an non-item")
 
+func drop_item():
+	if current_item:
+		var pickup = current_item.drop_scene
+		get_node("/root/Main/Environment").add_child(current_item.drop_scene)
+		current_item.drop_scene.set_owner(get_node("/root/Main/Environment"))
+		
+		pickup.global_transform.origin = translation + global_transform.basis.xform(Vector3.FORWARD) * 2
+		#pickup.add_central_force(global_transform.basis.xform(Vector3.FORWARD).normalized() * 1)
+		
+		items.erase(current_item)
+		current_item.queue_free()
+		
+		if items.size() > 0:
+			current_item =  items.front()
+		else:
+			current_item = null
+		
 func set_player_name(name):
 	$Sprite3D/Viewport/PlayerName.set_player_name(name)
 
@@ -218,10 +240,19 @@ func _on_SyncTimer_timeout():
 	if(is_network_master()):
 		rpc_unreliable("receive_sync", translation, velocity)
 
+func grab_item():
+	var items = $ItemPickupArea.get_overlapping_bodies()
+	
+	if items.size() > 1:
+		var closest = 0
+		var closest_dist = (items[0].global_transform.origin - global_transform.origin).length()
+		for i in range(1, items.size()):
+			var dist = (items[i].global_transform.origin - global_transform.origin).length()
+			if(dist < closest_dist):
+				closest = i
+				closest_dist = dist
+				
+		pick_up(items[closest])
+	elif items.size() == 1:
+		pick_up(items.front())		
 
-func _on_ItemPickupArea_body_entered(body):
-	print("entered")
-	if(body.is_in_group("pickup")):
-		print("pickup")
-		pick_up(body)
-	pass # Replace with function body.
