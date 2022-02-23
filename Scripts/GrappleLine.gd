@@ -12,10 +12,10 @@ func disable():
 	enabled = false
 	clear()
 
-func set_to(to: Vector3):
-	self.to = to
+func set_to(new_to: Vector3):
+	self.to = new_to
 	
-func _process(delta):
+func _process(_delta):
 	if(enabled):
 		draw_grapple()
 

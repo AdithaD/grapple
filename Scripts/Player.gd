@@ -36,8 +36,9 @@ var last_vel = Vector3.ZERO
 signal on_damage
 signal on_death
 
-func _enter_tree():
-	print("pp")
+export var max_inventory_size = 2
+var current_item = null
+var items = []
 
 func _ready():
 	print("p")
@@ -46,72 +47,36 @@ func _ready():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Pivot/Camera.make_current()
 
-
 func _physics_process(delta):
 	if(is_network_master()):
 		look_move(delta)
 		actions(delta)
-
-func actions(_delta):
-	if Input.is_action_just_pressed("grapple"):
-		if(grappling):
-			stop_grappling()
-		else:
-			print("attempt grapple")
+		
+func _input(event):
+	if(is_network_master()):
+			# Rotates the camera based on mouse input
+		if event is InputEventMouseMotion:
+			var roty = event.relative.x / get_viewport().size.x * sensitivity
 			
-			# Project a ray from the screen through the crosshair
-			var center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-			var from = $Pivot/Camera.project_ray_origin(center)
-			var to = from + $Pivot/Camera.project_ray_normal(center) * 100
-			var space_state = get_world().direct_space_state
-			var camera_result = space_state.intersect_ray(from, to, [], 0b10)
+			var rotx = event.relative.y / get_viewport().size.y * sensitivity
 			
-			if(camera_result):
-				print("camera_hit")
-				
-				# Project a ray from the player's hand to the hit point.
-				var global_hand_pos = $Hand.global_transform.origin
-				var result = space_state.intersect_ray(global_hand_pos, global_hand_pos + (camera_result.position - global_hand_pos) * max_grapple_distance, [self], 0b10)
-				
-				#Where it hits grapple to it.
-				if(result):
-					print("player_hit")
-					print(result.position)
-					print(global_hand_pos)
-					print(result.collider.name)
-					start_grapple(result.position)
-
-					
-# Initiates a grapple to a target point
-func start_grapple(to: Vector3):
-	# Creates a debug ball at hit position
-	var inst = debug_ball.instance()
-	get_tree().root.add_child(inst)
-	inst.global_transform.origin = to
-	
-	# Sets parameters for the grapple line
-	$Hand/GrappleLine.set_to(to)
-	$Hand/GrappleLine.enable()
-	
-	grappling = true
-	grapple_point = to
-
-func stop_grappling():
-	$Hand/GrappleLine.disable()
-	grappling = false
-	
+			
+			rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
+			
+			rpc("apply_rotation", rotx, roty)
+		
 func look_move(delta):
 	var direction = Vector3.ZERO
 	
 	# Basic Keyboard Movement
 	if Input.is_action_pressed("move_right"):
-		direction.x -= 1
-	if Input.is_action_pressed("move_left"):
 		direction.x += 1
+	if Input.is_action_pressed("move_left"):
+		direction.x -= 1
 	if Input.is_action_pressed("move_back"):
-		direction.z -= 1
-	if Input.is_action_pressed("move_forward"):
 		direction.z += 1
+	if Input.is_action_pressed("move_forward"):
+		direction.z -= 1
 	
 	if direction != Vector3.ZERO:
 			direction = direction.normalized();
@@ -147,16 +112,79 @@ func look_move(delta):
 		if(velocity.length() >  max_grapple_speed):
 			velocity = velocity.normalized() * max_grapple_speed
 	
+			print(velocity)
 	rpc("apply_movement", velocity)
-	
+
+remotesync func apply_rotation(rotx, roty):
+	$Pivot.rotate_x(rotx)
+	rotate_y(-roty)
+
 remotesync func apply_movement(new_velocity):
 	last_vel = self.velocity
 	self.velocity = move_and_slide(new_velocity, Vector3.UP)
+	
+func actions(_delta):
+	if Input.is_action_just_pressed("grapple"):
+		if(grappling):
+			stop_grappling()
+		else:
+			print("attempt grapple")
+			
+			# Project a ray from the screen through the crosshair
+			var center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
+			var from = $Pivot/Camera.project_ray_origin(center)
+			var to = from + $Pivot/Camera.project_ray_normal(center) * 100
+			var space_state = get_world().direct_space_state
+			var camera_result = space_state.intersect_ray(from, to, [], 0b10)
+			
+			if(camera_result):
+				print("camera_hit")
+				
+				# Project a ray from the player's hand to the hit point.
+				var global_hand_pos = $Hand.global_transform.origin
+				var result = space_state.intersect_ray(global_hand_pos, global_hand_pos + (camera_result.position - global_hand_pos) * max_grapple_distance, [self], 0b10)
+				
+				#Where it hits grapple to it.
+				if(result):
+					print("player_hit")
+					print(result.position)
+					print(global_hand_pos)
+					print(result.collider.name)
+					start_grapple(result.position)
+	if Input.is_action_pressed("use"):
+		use_item()
+	if Input.is_action_just_pressed("drop"):
+		drop_item()
+	if Input.is_action_just_pressed("grab"):
+		rpc("grab_item")
+	if Input.is_action_just_pressed("switch"):
+		var new_index = wrapi(items.find(current_item) + 1, 0, items.size())
+		print("curr item index ", items.find(current_item),"|| +1 = ", items.find(current_item) + 1 , "|| items.size() = ", items.size(), " || wrapi(items.find(current_item) + 1, 0, items.size() - 1) = ", new_index)
+		rpc("switch_item_to",new_index )
 
+# Initiates a grapple to a target point
+func start_grapple(to: Vector3):
+	# Creates a debug ball at hit position
+	var inst = debug_ball.instance()
+	get_tree().root.add_child(inst)
+	inst.global_transform.origin = to
+	
+	# Sets parameters for the grapple line
+	$Hand/GrappleLine.set_to(to)
+	$Hand/GrappleLine.enable()
+	
+	grappling = true
+	grapple_point = to
+
+func stop_grappling():
+	$Hand/GrappleLine.disable()
+	grappling = false
+	
 # Forces the synchronization of translation and velocity between peers
-puppet func receive_sync(sync_translation, sync_velocity):
+puppet func receive_sync(sync_translation, sync_rotation, sync_velocity):
 	print("recieving sync from ", get_tree().get_rpc_sender_id())
 	translation = sync_translation
+	rotation = sync_rotation
 	velocity = sync_velocity
 
 func take_fall_damage():
@@ -178,23 +206,86 @@ remotesync func take_damage(amnt):
 func die():
 	print("You died")
 
-func _input(event):
-	# Rotates the camera based on mouse input
-	if event is InputEventMouseMotion:
-		var roty = event.relative.x / get_viewport().size.x * sensitivity
+# Selects the closest item of the ground if there's space in the inventory. Calls the pick_up method 
+# and passes the found body.
+remotesync func grab_item():
+	var itemsInArea = $ItemPickupArea.get_overlapping_bodies()
+	
+	if items.size() < max_inventory_size:
+		if itemsInArea.size() > 1:
+			var closest = 0
+			var closest_dist = (itemsInArea[0].global_transform.origin - global_transform.origin).length()
+			for i in range(1, itemsInArea.size()):
+				var dist = (itemsInArea[i].global_transform.origin - global_transform.origin).length()
+				if(dist < closest_dist):
+					closest = i
+					closest_dist = dist
+			print(itemsInArea[closest].player_item)
+			pick_up(itemsInArea[closest])
+		elif itemsInArea.size() == 1:
+			print(itemsInArea.front())
+			pick_up(itemsInArea.front())	
+
+# Adds a pickup item to the player inventory
+func pick_up(item):
+	var player_item = item.player_item.instance()
+
+	item.get_parent().remove_child(item)
+	player_item.drop_scene = item
+
+	items.append(player_item)
+
+	var index  = items.size() - 1;
+	switch_item_to(index)
+
+# Informs the item that the player is attempting to use the item
+func use_item():
+	if(current_item):
+		print("using item")
+		if current_item.has_method("use"):
+			current_item.use()
+		else:
+			print("player has somehow equipped an non-item")
+
+# Drops the item in inventory into the world as an item pickup
+func drop_item():
+	if current_item:
+		var pickup = current_item.drop_scene
+		get_node("/root/Main/Environment").add_child(current_item.drop_scene)
+		current_item.drop_scene.set_owner(get_node("/root/Main/Environment"))
 		
-		var rotx = event.relative.y / get_viewport().size.y * sensitivity
+		pickup.global_transform.origin = translation + global_transform.basis.xform(Vector3.FORWARD) * 2
+		#pickup.add_central_force(global_transform.basis.xform(Vector3.FORWARD).normalized() * 1)
 		
-		rotate_y(-roty)
+		items.erase(current_item)
+		current_item.queue_free()
 		
-		rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
-		
-		$Pivot.rotate_x(-rotx)
-		
+		if items.size() > 0:
+			current_item =  items.front()
+		else:
+			current_item = null
+
+# Switches between elements of the items array given a specific target index. Controls the 
+# instantiation of player models and other switching effects.
+remotesync func switch_item_to(index):
+	if not index >= items.size():
+		for n in $Hand/Items.get_children():
+			$Hand/Items.remove_child(n)
+
+		current_item = items[index]
+		$Hand/Items.add_child(current_item)
+		print("switching to item ", current_item.name)
+	else:
+		print("attempting to access item index ", index, " when size of inv is only ", items.size())
+
+
 func set_player_name(name):
 	$Sprite3D/Viewport/PlayerName.set_player_name(name)
 
 # Timer for sync
 func _on_SyncTimer_timeout():
 	if(is_network_master()):
-		rpc_unreliable("receive_sync", translation, velocity)
+		rpc_unreliable("receive_sync", translation, rotation, velocity)
+
+
+

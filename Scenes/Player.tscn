@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/GrappleLine.gd" type="Script" id=2]
@@ -11,11 +11,14 @@
 [sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.109804, 0.619608, 0.858824, 1 )
 
-[node name="Player" type="KinematicBody"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107654, 2.05219, 0.000422001 )
-collision_mask = 2
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 4, 1.793, 4 )
+
+[node name="Player" type="KinematicBody" groups=["player"]]
+collision_mask = 6
 script = ExtResource( 1 )
 debug_ball = ExtResource( 3 )
+starting_health = 1000
 
 [node name="Collider" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
@@ -27,7 +30,7 @@ mesh = SubResource( 1 )
 material/0 = SubResource( 3 )
 
 [node name="Pivot" type="SpringArm" parent="."]
-transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.54992, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54992, 0 )
 collision_mask = 2
 spring_length = 7.0
 margin = 0.1
@@ -36,13 +39,24 @@ margin = 0.1
 far = 548.5
 
 [node name="Hand" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.02611 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.026 )
 
 [node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00965428, 0, 0 )
 script = ExtResource( 2 )
+
+[node name="Items" type="Spatial" parent="Hand"]
 
 [node name="SyncTimer" type="Timer" parent="."]
 wait_time = 2.0
 autostart = true
+
+[node name="ItemPickupArea" type="Area" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape" type="CollisionShape" parent="ItemPickupArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0148973, 2.38419e-07, 0.000949383 )
+shape = SubResource( 4 )
 
 [connection signal="timeout" from="SyncTimer" to="." method="_on_SyncTimer_timeout"]

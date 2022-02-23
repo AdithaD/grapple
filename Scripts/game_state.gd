@@ -72,6 +72,7 @@ remote func register_player(new_player_name, new_lobby_name):
 	lobby_name =  new_lobby_name
 	
 	emit_signal("player_list_changed")
+	print(players)
 
 
 func unregister_player(id):
@@ -93,7 +94,7 @@ remote func pre_start_game(spawn_points):
 		var player = player_scene.instance()
 
 		player.set_name(str(p_id)) # Use unique ID as node name.
-		player.translation=spawn_pos
+		player.translation=spawn_pos + Vector3(0, 1.5, 0)
 		player.set_network_master(p_id) #set unique id as master.
 
 #		if p_id == get_tree().get_network_unique_id():
@@ -140,7 +141,7 @@ func host_game(new_player_name, new_lobby_name):
 func join_game(new_player_name, ip):
 	player_name = new_player_name
 	peer = NetworkedMultiplayerENet.new()
-	var error = peer.create_client(ip, DEFAULT_PORT)
+	peer.create_client(ip, DEFAULT_PORT)
 	get_tree().set_network_peer(peer)
 
 
@@ -177,7 +178,7 @@ func end_game():
 	emit_signal("game_ended")
 	players.clear()
 
-
+# warning-ignore-all:return_value_discarded
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self,"_player_disconnected")

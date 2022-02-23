@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Assets/Sounds/laserShoot.wav" type="AudioStream" id=1]
+[ext_resource path="res://Assets/shitty gun.glb" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/GunItem.gd" type="Script" id=3]
+[ext_resource path="res://Assets/Sounds/Hit Marker.wav" type="AudioStream" id=4]
+
+[node name="Rifle" type="Spatial"]
+script = ExtResource( 3 )
+item_name = "Rifle"
+
+[node name="shitty gun" parent="." instance=ExtResource( 2 )]
+transform = Transform( -0.6, 0, -5.24537e-08, 0, 0.6, 0, 5.24537e-08, 0, -0.6, 0, 0, 0.219647 )
+
+[node name="Tip" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.238 )
+
+[node name="FireTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="FireSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 1 )
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
