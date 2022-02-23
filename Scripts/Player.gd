@@ -158,9 +158,9 @@ func actions(_delta):
 	if Input.is_action_just_pressed("grab"):
 		rpc("grab_item")
 	if Input.is_action_just_pressed("switch"):
-		print("curr item index ", items.find(current_item),"|| +1 = ", items.find(current_item) + 1 , "|| items.size() = ", items.size(), " || wrapi(items.find(current_item) + 1, 0, items.size() - 1) = ", wrapi(items.find(current_item) + 1, 0, items.size() - 1))
-		print(wrapi(items.find(current_item) + 1, 0, items.size() - 1))
-		switch_item_to(wrapi(items.find(current_item) + 1, 0, items.size()))
+		var new_index = wrapi(items.find(current_item) + 1, 0, items.size())
+		print("curr item index ", items.find(current_item),"|| +1 = ", items.find(current_item) + 1 , "|| items.size() = ", items.size(), " || wrapi(items.find(current_item) + 1, 0, items.size() - 1) = ", new_index)
+		rpc("switch_item_to",new_index )
 
 # Initiates a grapple to a target point
 func start_grapple(to: Vector3):
@@ -267,7 +267,7 @@ func drop_item():
 
 # Switches between elements of the items array given a specific target index. Controls the 
 # instantiation of player models and other switching effects.
-func switch_item_to(index):
+remotesync func switch_item_to(index):
 	if not index >= items.size():
 		for n in $Hand/Items.get_children():
 			$Hand/Items.remove_child(n)
