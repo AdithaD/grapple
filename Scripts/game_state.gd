@@ -140,7 +140,7 @@ func host_game(new_player_name, new_lobby_name):
 func join_game(new_player_name, ip):
 	player_name = new_player_name
 	peer = NetworkedMultiplayerENet.new()
-	var error = peer.create_client(ip, DEFAULT_PORT)
+	peer.create_client(ip, DEFAULT_PORT)
 	get_tree().set_network_peer(peer)
 
 
@@ -177,7 +177,7 @@ func end_game():
 	emit_signal("game_ended")
 	players.clear()
 
-
+# warning-ignore-all:return_value_discarded
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self,"_player_disconnected")
