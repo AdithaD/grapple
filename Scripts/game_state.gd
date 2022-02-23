@@ -72,6 +72,7 @@ remote func register_player(new_player_name, new_lobby_name):
 	lobby_name =  new_lobby_name
 	
 	emit_signal("player_list_changed")
+	print(players)
 
 
 func unregister_player(id):
