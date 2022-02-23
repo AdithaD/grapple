@@ -93,7 +93,7 @@ remote func pre_start_game(spawn_points):
 		var player = player_scene.instance()
 
 		player.set_name(str(p_id)) # Use unique ID as node name.
-		player.translation=spawn_pos
+		player.translation=spawn_pos + Vector3(0, 1.5, 0)
 		player.set_network_master(p_id) #set unique id as master.
 
 #		if p_id == get_tree().get_network_unique_id():

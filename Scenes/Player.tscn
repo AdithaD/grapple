@@ -15,7 +15,6 @@ albedo_color = Color( 0.109804, 0.619608, 0.858824, 1 )
 extents = Vector3( 4, 1.793, 4 )
 
 [node name="Player" type="KinematicBody" groups=["player"]]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107654, 2.05219, 0.000422001 )
 collision_mask = 6
 script = ExtResource( 1 )
 debug_ball = ExtResource( 3 )
@@ -45,6 +44,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.026 )
 [node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00965428, 0, 0 )
 script = ExtResource( 2 )
+
+[node name="Items" type="Spatial" parent="Hand"]
 
 [node name="SyncTimer" type="Timer" parent="."]
 wait_time = 2.0

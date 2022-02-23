@@ -36,9 +36,22 @@ var last_vel = Vector3.ZERO
 signal on_damage
 signal on_death
 
+export var max_inventory_size = 2
 var current_item = null
 var items = []
 
+func _ready():
+	print("p")
+	# Set players camera as the main
+	if is_network_master():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		$Pivot/Camera.make_current()
+
+func _physics_process(delta):
+	if(is_network_master()):
+		look_move(delta)
+		actions(delta)
+		
 func _input(event):
 	if(is_network_master()):
 			# Rotates the camera based on mouse input
@@ -52,24 +65,6 @@ func _input(event):
 			
 			rpc("apply_rotation", rotx, roty)
 		
-
-remotesync func apply_rotation(rotx, roty):
-	$Pivot.rotate_x(rotx)
-	rotate_y(-roty)
-
-func _ready():
-	print("p")
-	# Set players camera as the main
-	if is_network_master():
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		$Pivot/Camera.make_current()
-
-
-func _physics_process(delta):
-	if(is_network_master()):
-		look_move(delta)
-		actions(delta)
-
 func look_move(delta):
 	var direction = Vector3.ZERO
 	
@@ -117,8 +112,13 @@ func look_move(delta):
 		if(velocity.length() >  max_grapple_speed):
 			velocity = velocity.normalized() * max_grapple_speed
 	
+			print(velocity)
 	rpc("apply_movement", velocity)
-	
+
+remotesync func apply_rotation(rotx, roty):
+	$Pivot.rotate_x(rotx)
+	rotate_y(-roty)
+
 remotesync func apply_movement(new_velocity):
 	last_vel = self.velocity
 	self.velocity = move_and_slide(new_velocity, Vector3.UP)
@@ -157,6 +157,11 @@ func actions(_delta):
 		drop_item()
 	if Input.is_action_just_pressed("grab"):
 		rpc("grab_item")
+	if Input.is_action_just_pressed("switch"):
+		print("curr item index ", items.find(current_item),"|| +1 = ", items.find(current_item) + 1 , "|| items.size() = ", items.size(), " || wrapi(items.find(current_item) + 1, 0, items.size() - 1) = ", wrapi(items.find(current_item) + 1, 0, items.size() - 1))
+		print(wrapi(items.find(current_item) + 1, 0, items.size() - 1))
+		switch_item_to(wrapi(items.find(current_item) + 1, 0, items.size()))
+
 # Initiates a grapple to a target point
 func start_grapple(to: Vector3):
 	# Creates a debug ball at hit position
@@ -201,25 +206,48 @@ remotesync func take_damage(amnt):
 func die():
 	print("You died")
 
+# Selects the closest item of the ground if there's space in the inventory. Calls the pick_up method 
+# and passes the found body.
+remotesync func grab_item():
+	var itemsInArea = $ItemPickupArea.get_overlapping_bodies()
+	
+	if items.size() < max_inventory_size:
+		if itemsInArea.size() > 1:
+			var closest = 0
+			var closest_dist = (itemsInArea[0].global_transform.origin - global_transform.origin).length()
+			for i in range(1, itemsInArea.size()):
+				var dist = (itemsInArea[i].global_transform.origin - global_transform.origin).length()
+				if(dist < closest_dist):
+					closest = i
+					closest_dist = dist
+			print(itemsInArea[closest].player_item)
+			pick_up(itemsInArea[closest])
+		elif itemsInArea.size() == 1:
+			print(itemsInArea.front())
+			pick_up(itemsInArea.front())	
+
+# Adds a pickup item to the player inventory
 func pick_up(item):
 	var player_item = item.player_item.instance()
-	$Hand.add_child(player_item)
-	
-	items.append(player_item)
-	
-	if !current_item: 
-		current_item = player_item
-	
+
 	item.get_parent().remove_child(item)
 	player_item.drop_scene = item
-	
+
+	items.append(player_item)
+
+	var index  = items.size() - 1;
+	switch_item_to(index)
+
+# Informs the item that the player is attempting to use the item
 func use_item():
 	if(current_item):
+		print("using item")
 		if current_item.has_method("use"):
 			current_item.use()
 		else:
 			print("player has somehow equipped an non-item")
 
+# Drops the item in inventory into the world as an item pickup
 func drop_item():
 	if current_item:
 		var pickup = current_item.drop_scene
@@ -236,7 +264,21 @@ func drop_item():
 			current_item =  items.front()
 		else:
 			current_item = null
-		
+
+# Switches between elements of the items array given a specific target index. Controls the 
+# instantiation of player models and other switching effects.
+func switch_item_to(index):
+	if not index >= items.size():
+		for n in $Hand/Items.get_children():
+			$Hand/Items.remove_child(n)
+
+		current_item = items[index]
+		$Hand/Items.add_child(current_item)
+		print("switching to item ", current_item.name)
+	else:
+		print("attempting to access item index ", index, " when size of inv is only ", items.size())
+
+
 func set_player_name(name):
 	$Sprite3D/Viewport/PlayerName.set_player_name(name)
 
@@ -245,20 +287,5 @@ func _on_SyncTimer_timeout():
 	if(is_network_master()):
 		rpc_unreliable("receive_sync", translation, rotation, velocity)
 
-remotesync func grab_item():
-	var items = $ItemPickupArea.get_overlapping_bodies()
-	
-	if items.size() > 1:
-		var closest = 0
-		var closest_dist = (items[0].global_transform.origin - global_transform.origin).length()
-		for i in range(1, items.size()):
-			var dist = (items[i].global_transform.origin - global_transform.origin).length()
-			if(dist < closest_dist):
-				closest = i
-				closest_dist = dist
-		print(items[closest].player_item)
-		pick_up(items[closest])
-	elif items.size() == 1:
-		print(items.front())
-		pick_up(items.front())	
+
 
