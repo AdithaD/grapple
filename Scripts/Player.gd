@@ -43,9 +43,6 @@ var items = []
 func _ready():
 	print("p")
 	# Set players camera as the main
-	if is_network_master():
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		$Pivot/Camera.make_current()
 
 func _physics_process(delta):
 	if(is_network_master()):
@@ -57,13 +54,7 @@ func _input(event):
 			# Rotates the camera based on mouse input
 		if event is InputEventMouseMotion:
 			var roty = event.relative.x / get_viewport().size.x * sensitivity
-			
-			var rotx = event.relative.y / get_viewport().size.y * sensitivity
-			
-			
-			rotx = $Pivot.rotation_degrees.x - clamp($Pivot.rotation_degrees.x + rotx, -90, 90)
-			
-			rpc("apply_rotation", rotx, roty)
+			rpc("apply_rotation", roty)
 		
 func look_move(delta):
 	var direction = Vector3.ZERO
@@ -115,8 +106,7 @@ func look_move(delta):
 			print(velocity)
 	rpc("apply_movement", velocity)
 
-remotesync func apply_rotation(rotx, roty):
-	$Pivot.rotate_x(rotx)
+remotesync func apply_rotation(roty):
 	rotate_y(-roty)
 
 remotesync func apply_movement(new_velocity):
@@ -129,11 +119,11 @@ func actions(_delta):
 			stop_grappling()
 		else:
 			print("attempt grapple")
-			
+			var camera = get_viewport().get_camera()
 			# Project a ray from the screen through the crosshair
 			var center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-			var from = $Pivot/Camera.project_ray_origin(center)
-			var to = from + $Pivot/Camera.project_ray_normal(center) * 100
+			var from = camera.project_ray_origin(center)
+			var to = from + camera.project_ray_normal(center) * 100
 			var space_state = get_world().direct_space_state
 			var camera_result = space_state.intersect_ray(from, to, [], 0b10)
 			
@@ -141,7 +131,7 @@ func actions(_delta):
 				print("camera_hit")
 				
 				# Project a ray from the player's hand to the hit point.
-				var global_hand_pos = $Hand.global_transform.origin
+				var global_hand_pos = $Hand/GrapplePoint.global_transform.origin
 				var result = space_state.intersect_ray(global_hand_pos, global_hand_pos + (camera_result.position - global_hand_pos) * max_grapple_distance, [self], 0b10)
 				
 				#Where it hits grapple to it.
@@ -170,14 +160,14 @@ func start_grapple(to: Vector3):
 	inst.global_transform.origin = to
 	
 	# Sets parameters for the grapple line
-	$Hand/GrappleLine.set_to(to)
-	$Hand/GrappleLine.enable()
+	$Hand/GrapplePoint/GrappleLine.set_to(to)
+	$Hand/GrapplePoint/GrappleLine.enable()
 	
 	grappling = true
 	grapple_point = to
 
 func stop_grappling():
-	$Hand/GrappleLine.disable()
+	$Hand/GrapplePoint/GrappleLine.disable()
 	grappling = false
 	
 # Forces the synchronization of translation and velocity between peers

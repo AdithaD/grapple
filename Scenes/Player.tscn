@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/GrappleLine.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/debug_ball.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/FirstPersonCamera.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/CameraMouseRotX.gd" type="Script" id=5]
+[ext_resource path="res://Scripts/CameraManager.gd" type="Script" id=6]
 
 [sub_resource type="CapsuleShape" id=2]
 
@@ -29,23 +32,17 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0
 mesh = SubResource( 1 )
 material/0 = SubResource( 3 )
 
-[node name="Pivot" type="SpringArm" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54992, 0 )
-collision_mask = 2
-spring_length = 7.0
-margin = 0.1
-
-[node name="Camera" type="Camera" parent="Pivot"]
-far = 548.5
-
 [node name="Hand" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.026 )
-
-[node name="GrappleLine" type="ImmediateGeometry" parent="Hand"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00965428, 0, 0 )
-script = ExtResource( 2 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4466, 0.440944, -1.49899 )
 
 [node name="Items" type="Spatial" parent="Hand"]
+script = ExtResource( 5 )
+
+[node name="GrapplePoint" type="Spatial" parent="Hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.879231, -0.0679745, 0.205714 )
+
+[node name="GrappleLine" type="ImmediateGeometry" parent="Hand/GrapplePoint"]
+script = ExtResource( 2 )
 
 [node name="SyncTimer" type="Timer" parent="."]
 wait_time = 2.0
@@ -58,5 +55,27 @@ collision_mask = 4
 [node name="CollisionShape" type="CollisionShape" parent="ItemPickupArea"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0148973, 2.38419e-07, 0.000949383 )
 shape = SubResource( 4 )
+
+[node name="FPCTargetLocation" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.513584, -1.27511 )
+
+[node name="CameraManager" type="Spatial" parent="."]
+script = ExtResource( 6 )
+
+[node name="Pivot" type="SpringArm" parent="CameraManager"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54992, 0 )
+collision_mask = 2
+spring_length = 7.0
+margin = 0.1
+script = ExtResource( 5 )
+
+[node name="ThirdPersonCamera" type="Camera" parent="CameraManager/Pivot"]
+far = 600.0
+
+[node name="FirstPersonCamera" type="Camera" parent="CameraManager"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54992, 0 )
+far = 600.0
+script = ExtResource( 4 )
+target_location = Vector3( 0, 0.514, -1.275 )
 
 [connection signal="timeout" from="SyncTimer" to="." method="_on_SyncTimer_timeout"]
