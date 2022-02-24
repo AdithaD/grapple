@@ -40,10 +40,6 @@ export var max_inventory_size = 2
 var current_item = null
 var items = []
 
-func _ready():
-	print("p")
-	# Set players camera as the main
-
 func _physics_process(delta):
 	if(is_network_master()):
 		look_move(delta)
@@ -103,7 +99,6 @@ func look_move(delta):
 		if(velocity.length() >  max_grapple_speed):
 			velocity = velocity.normalized() * max_grapple_speed
 	
-			print(velocity)
 	rpc("apply_movement", velocity)
 
 remotesync func apply_rotation(roty):
@@ -118,7 +113,6 @@ func actions(_delta):
 		if(grappling):
 			stop_grappling()
 		else:
-			print("attempt grapple")
 			var camera = get_viewport().get_camera()
 			# Project a ray from the screen through the crosshair
 			var center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
@@ -128,7 +122,6 @@ func actions(_delta):
 			var camera_result = space_state.intersect_ray(from, to, [], 0b10)
 			
 			if(camera_result):
-				print("camera_hit")
 				
 				# Project a ray from the player's hand to the hit point.
 				var global_hand_pos = $Hand/GrapplePoint.global_transform.origin
@@ -136,10 +129,6 @@ func actions(_delta):
 				
 				#Where it hits grapple to it.
 				if(result):
-					print("player_hit")
-					print(result.position)
-					print(global_hand_pos)
-					print(result.collider.name)
 					start_grapple(result.position)
 	if Input.is_action_pressed("use"):
 		use_item()
@@ -149,7 +138,6 @@ func actions(_delta):
 		rpc("grab_item")
 	if Input.is_action_just_pressed("switch"):
 		var new_index = wrapi(items.find(current_item) + 1, 0, items.size())
-		print("curr item index ", items.find(current_item),"|| +1 = ", items.find(current_item) + 1 , "|| items.size() = ", items.size(), " || wrapi(items.find(current_item) + 1, 0, items.size() - 1) = ", new_index)
 		rpc("switch_item_to",new_index )
 
 # Initiates a grapple to a target point
@@ -179,7 +167,6 @@ puppet func receive_sync(sync_translation, sync_rotation, sync_velocity):
 
 func take_fall_damage():
 	var diff = abs(last_vel.y - velocity.y)
-	print(diff)
 	if(diff >  fall_damage_cutoff_velocity):
 		take_damage((diff - fall_damage_cutoff_velocity) * fall_damage_factor)
 	
@@ -210,10 +197,8 @@ remotesync func grab_item():
 				if(dist < closest_dist):
 					closest = i
 					closest_dist = dist
-			print(itemsInArea[closest].player_item)
 			pick_up(itemsInArea[closest])
 		elif itemsInArea.size() == 1:
-			print(itemsInArea.front())
 			pick_up(itemsInArea.front())	
 
 # Adds a pickup item to the player inventory
@@ -231,7 +216,6 @@ func pick_up(item):
 # Informs the item that the player is attempting to use the item
 func use_item():
 	if(current_item):
-		print("using item")
 		if current_item.has_method("use"):
 			current_item.use()
 		else:
