@@ -40,9 +40,11 @@ export var max_inventory_size = 2
 var current_item = null
 var items = []
 
+var frozen = false
+
 func _physics_process(delta):
-	if(is_network_master()):
-		look_move(delta)
+	if(is_network_master() and not frozen):
+		move(delta)
 		actions(delta)
 		
 func _input(event):
@@ -52,7 +54,7 @@ func _input(event):
 			var roty = event.relative.x / get_viewport().size.x * sensitivity
 			rpc("apply_rotation", roty)
 		
-func look_move(delta):
+func move(delta):
 	var direction = Vector3.ZERO
 	
 	# Basic Keyboard Movement
@@ -252,10 +254,14 @@ remotesync func switch_item_to(index):
 	else:
 		print("attempting to access item index ", index, " when size of inv is only ", items.size())
 
-
 func set_player_name(name):
 	$Sprite3D/Viewport/PlayerName.set_player_name(name)
 
+remotesync func freeze():
+	frozen = true
+
+remotesync func unfreeze():
+	frozen = false
 # Timer for sync
 func _on_SyncTimer_timeout():
 	if(is_network_master()):

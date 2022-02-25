@@ -19,6 +19,8 @@ var lobby_name = "lobby"
 var players = {}
 var players_ready = []
 
+var world
+
 # Signals to let lobby GUI know what's going on.
 signal player_list_changed()
 signal connection_failed()
@@ -80,9 +82,9 @@ func unregister_player(id):
 	emit_signal("player_list_changed")
 
 
-remote func pre_start_game(spawn_points):
+remote func pre_init_game(spawn_points):
 	# Change scene.
-	var world = load("res://Scenes/World.tscn").instance()
+	world = load("res://Scenes/World.tscn").instance()
 	get_tree().get_root().add_child(world)
 
 	get_tree().get_root().get_node("Lobby").hide()
@@ -110,12 +112,14 @@ remote func pre_start_game(spawn_points):
 		# Tell server we are ready to start.
 		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
 	elif players.size() == 0:
-		post_start_game()
+		post_init_game()
 
 
-remote func post_start_game():
+remote func post_init_game():
 	emit_signal("init_complete")
-	get_tree().set_pause(false) # Unpause and unleash the game!
+	get_tree().set_pause(false)
+	world.start_game()
+	 # Unpause and unleash the game!
 
 
 remote func ready_to_start(id):
@@ -126,8 +130,8 @@ remote func ready_to_start(id):
 
 	if players_ready.size() == players.size():
 		for p in players:
-			rpc_id(p, "post_start_game")
-		post_start_game()
+			rpc_id(p, "post_init_game")
+		post_init_game()
 
 
 func host_game(new_player_name, new_lobby_name):
@@ -165,9 +169,9 @@ func begin_game():
 		spawn_point_idx += 1
 	# Call to pre-start game with the spawn points.
 	for p in players:
-		rpc_id(p, "pre_start_game", spawn_points)
+		rpc_id(p, "pre_init_game", spawn_points)
 
-	pre_start_game(spawn_points)
+	pre_init_game(spawn_points)
 
 
 func end_game():
