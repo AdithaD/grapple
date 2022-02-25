@@ -21,17 +21,13 @@ func use():
 		var space_state = get_world().direct_space_state
 		var camera_result = space_state.intersect_ray(from, to, [], 0b1)
 		
-		if(camera_result):
-			print("camera_hit")
-			
+		if(camera_result):			
 			# Project a ray from the player's hand to the hit point.
 			var global_tip_pos = $Tip.global_transform.origin
 			var result = space_state.intersect_ray(global_tip_pos, global_tip_pos + (camera_result.position - global_tip_pos) * max_fire_range, [self], 0b1)
 			
-			#Where it hits grapple to it.
+			#Where it hits shoot it
 			if(result):
-				print("player_hit")
-				print(result.collider)
 				shoot(result.collider)
 		
 		$FireTimer.start()
@@ -39,7 +35,6 @@ func use():
 	
 func shoot(target):
 	if (target.has_method("take_damage")):
-		print(target.get_name())
 		target.rpc_id(int(target.get_name()), "take_damage", damage)
 		$HitSound.play()
 		

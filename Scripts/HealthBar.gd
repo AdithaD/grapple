@@ -3,7 +3,6 @@ extends ProgressBar
 var player
 
 func _ready():
-	print("l")
 	GameState.connect("init_complete", self, "_on_Init_Complete")	
 	
 

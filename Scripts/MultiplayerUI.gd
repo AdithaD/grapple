@@ -20,11 +20,6 @@ func _on_Join_Server_button_down():
 	$ServerButtons.visible = false
 	$ConnectPrompt.visible = true
 
-
-func _on_Start_Server_button_down():
-	print("display server ui")
-
-
 func _on_Connect_button_down():
 	get_node("/root/Main").join_server($ConnectPrompt/IPEntry.text)
 
